@@ -55,10 +55,10 @@ module DSkyline
     #------------------------------------------------------------------------
     # * Index Crawl
     #------------------------------------------------------------------------
-    def self.index_crawl(file_type, file)
+    def index_crawl(file_type, file)
       text = []
       type = type == 0 ? "Audio" : "Graphic"
-      message = "The following #{type} file is missing: #{material.to_s}"
+      message = "The following #{type} file is missing: #{file.to_s}"
       text.push(message)
       text.each {|text| puts text} unless !MMS_CONSOLE
       msgbox MMS_MESGBOX_VOCAB + file.to_s unless !MMS_MESGBOX
