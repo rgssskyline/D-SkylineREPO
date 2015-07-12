@@ -87,7 +87,7 @@ class << Audio
   #--------------------------------------------------------------------------
   # * Alias Records
   #--------------------------------------------------------------------------
-  audio_types = [:bgm, :bgs, :me, :se]
+  audio_types = [:bgm_play, :bgs_play, :me_play, :se_play]
   audio_types.each {|audio_types|
     alias_method "dskyline_mms_audio_#{audio_types}".to_sym, audio_types
     define_method (audio_types) {|*args, &block|
