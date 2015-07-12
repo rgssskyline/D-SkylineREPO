@@ -1,0 +1,130 @@
+#==============================================================================
+# ** D-Skyline
+#    Missing Material Spider
+#    Build - v0.3
+#    Original Day - 04.21.2015
+#    Last Updated - 07.12.2015
+#------------------------------------------------------------------------------
+#  * Update Log: [NR] - Non-Release to Public / [PR] - Released to Public
+#  v0.1 [NR] - Testing Build
+#  v0.2 [PR] - Initial Release
+#  v0.3 [PR] - Code Optimization & Stabilization
+#------------------------------------------------------------------------------
+#  * Description:
+#    This script gathers all of missing files in-game and records them
+#    as it indexes them. It works in the sense of a spider bot, as it
+#    logs the missing data while categorizing it based on it's type.
+#    It will also inject a blank file where the missing one is to prevent
+#    the game from crashing.
+#------------------------------------------------------------------------------
+#  * License Fees:
+#    $0.00 - Non-Commercial Usage Allowed in a any project.
+#    $0.99 - Commercial Usage Allowed in a any project. (This script only)
+#    $9.99 - All my scripts are allowed for unlimited commercial usage.
+#    ** All paid licenses will be noted by PayPal's invoice system. This will
+#       ensure that there's no error of communication between permissions and
+#       will help keep track of user licenses.
+#------------------------------------------------------------------------------
+#  * Credits:
+#    Please use - "Script name here" by Drake Skyline
+#------------------------------------------------------------------------------
+#  * Root Check/Enable - DO NOT REMOVE
+   $dSkyline = {} if $dSkyline.nil? 
+   $dSkyline[:ds_missing_material_spider] = true
+#==============================================================================
+
+module DSkyline
+  module MISSING_MATERIAL_SPIDER
+    
+    # Would you like to print indexed files to the editor's console?
+    MMS_CONSOLE = true
+    
+    # Would you like to print indexed files to the editor's error message box?
+    MMS_MESGBOX = false
+    
+    # Would you like to print indexed files to a new .txt document for later?
+    MMS_TXTFILE = false
+    
+    # Vocab Messages
+    MMS_MESGBOX_VOCAB = "Your game is missing the following file:"
+    MMS_TXTFILE_VOCAB = "Your game is missing the following file:"
+    
+    # What would you like to call the text file?
+    MMS_TXTFILE_NAME = "Missing Material Spider Results"
+    
+    #------------------------------------------------------------------------
+    # * Index Crawl
+    #------------------------------------------------------------------------
+    def self.index_crawl(file_type, file)
+      text = []
+      type = type == 0 ? "Audio" : "Graphic"
+      message = "The following #{type} file is missing: #{material.to_s}"
+      text.push(message)
+      text.each {|text| puts text} unless !MMS_CONSOLE
+      msgbox MMS_MESGBOX_VOCAB + file.to_s unless !MMS_MESGBOX
+      unless !MMS_TXTFILE
+        file_name = MMS_TXTFILE_NAME
+        file_orig = FileTest.exist?(file_name) ? IO.read(file_name) : ""
+        File.open(file_name, 'w') {|file| text.each {|text| file.puts text}}
+        File.open(file_name, 'a') {|file| file.puts file_orig}
+      end
+    end
+  end
+end
+
+#==============================================================================
+# ** Audio
+#------------------------------------------------------------------------------
+#  The module that carries out music and sound processing.
+#==============================================================================
+
+class << Audio
+  #--------------------------------------------------------------------------
+  # * Included Modules
+  #--------------------------------------------------------------------------
+  include DSkyline
+  include MISSING_MATERIAL_SPIDER
+  #--------------------------------------------------------------------------
+  # * Alias Records
+  #--------------------------------------------------------------------------
+  audio_types = [:bgm, :bgs, :me, :se]
+  audio_types.each {|audio_types|
+    alias_method "dskyline_mms_audio_#{audio_types}".to_sym, audio_types
+    define_method (audio_types) {|*args, &block|
+    begin
+      self.send "dskyline_mms_audio_#{audio_types}", *args, &block
+    rescue Errno::ENOENT ; index_crawl(0, args[0])
+    end
+    }
+  }
+end
+      
+#==============================================================================
+# ** Bitmap
+#------------------------------------------------------------------------------
+#  The bitmap class. Bitmaps represent images. Sprites (Sprite) and other 
+# objects must be used to display bitmaps onscreen.
+#==============================================================================
+
+class Bitmap
+  #--------------------------------------------------------------------------
+  # * Included Modules
+  #--------------------------------------------------------------------------
+  include DSkyline
+  include MISSING_MATERIAL_SPIDER
+  #--------------------------------------------------------------------------
+  # * Alias Records
+  #--------------------------------------------------------------------------
+  alias dskyline_mms_bitmap_initialize                             initialize
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(*args, &block)
+    begin
+      dskyline_mms_bitmap_initialize(*args, &block)
+    rescue Errno::ENOENT
+      index_crawl(1, args[0])
+      dskyline_mms_bitmap_initialize(1, 1, &block)
+    end
+  end
+end
