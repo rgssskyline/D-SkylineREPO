@@ -1,0 +1,75 @@
+#==============================================================================
+# ** D-Skyline
+#    Start Faded 
+#    Build - v0.4
+#    Original Day - 04.03.2015
+#    Last Updated - 07.12.2015
+#------------------------------------------------------------------------------
+#  * Update Log: [NR] - Non-Release to Public / [PR] - Released to Public
+#  v0.1 [NR] - Testing Build
+#  v0.2 [PR] - Initial Release
+#  v0.3 [NR] - Gray Channel Setting Added
+#  v0.4 [PR] - Code Optimization & Stabilization
+#------------------------------------------------------------------------------
+#  * Description:
+#    This script enables a prefaded map based on [RGBG] values. It uses the
+#    same exact tint method as found inside the event editor. By using this
+#    script, you'll minimize the need to create a wasted blank space map that
+#    will only be used to set switches, variables, and to fade-in when used
+#    correctly.
+#------------------------------------------------------------------------------
+#  * License Fees:
+#    $0.00 - Commercial Usage Allowed in a single project.
+#    $0.99 - Commercial Usage Allowed in a any project. (This script only)
+#    $9.99 - All my scripts are allowed for unlimited commerical usage.
+#    ** All paid licenses will be noted by paypal's invoice system. This will
+#       ensure that there's no error of communication between permissions and
+#       will help keep track of user licenses.
+#------------------------------------------------------------------------------
+#  * Credits:
+#    Please use - "Script name here" by Drake Skyline
+#------------------------------------------------------------------------------
+#  * Root Check/Enable - DO NOT REMOVE
+   $dSkyline = {} if $dSkyline.nil? 
+   $dSkyline[:ds_start_faded] = true
+#==============================================================================
+
+module DSkyline
+  module START_FADED
+
+    # Which Map will include the pre-fade?
+    SF_MAP_ID = 1
+    
+    # Choose the Values of the Tint Fade (-255 to 255 on all channels)
+    # Channels -> Red, Green, Blue, Gray a.k.a RGBG
+    SF_CHANNEL_VALUES = [-255, -255, -255, 0]
+    
+  end
+end
+
+#==============================================================================
+# ** Scene_Title
+#------------------------------------------------------------------------------
+#  This class performs the title screen processing.
+#==============================================================================
+
+class Scene_Title < Scene_Base
+  #--------------------------------------------------------------------------
+  # * Included Modules
+  #--------------------------------------------------------------------------
+  include DSkyline
+  include START_FADED
+  #--------------------------------------------------------------------------
+  # * Alias Records
+  #--------------------------------------------------------------------------
+  alias dskyline_sf_scene_title_command_new_game             command_new_game
+  #--------------------------------------------------------------------------
+  # * [New Game] Command
+  #--------------------------------------------------------------------------
+  def command_new_game
+    dskyline_sf_scene_title_command_new_game
+    unless $game_map.map_id != SF_MAP_ID
+      $game_map.screen.tone.set(*SF_CHANNEL_VALUES)
+    end
+  end
+end
