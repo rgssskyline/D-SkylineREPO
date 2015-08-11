@@ -1,0 +1,64 @@
+#==============================================================================
+=begin
+
+    Author  : Drake Skyline
+    Script  : Extended Window Color Palette
+    Build   : Ruby 1.9.3/RGSS3
+    Version : 1.0
+    
+    Original Day : 08.11.2015
+    Last Updated : ??.??.????
+    
+    Installing :
+      Copy & Paste inside the script editor under the materials section.
+      This script will not work outside of RPG Maker VX Ace.
+    
+    How to Use :
+      I've provided the default windowskin with my new color palette method.
+      The grid is now 4x4 for a total of 128 possible colors as opposed 
+      to RM's default 8x8 for a total of 32 possible colors. You can still 
+      call these new colors like you would any other color. \c[x]
+      If you really want a lot more colors I've also included the option
+      of allowing you to use 2x2 colors for a total of 512 possible colors.
+      (Not that you'd even use the 128 colors, but who knows?!)
+      
+    License Fees : 
+      key : [AP] = Any Project : [SP] = Single Project
+      $0.00 - NON-Commerical Usage [AP]
+      $0.99 - This script for Commercial Usage [SP]
+      $9.99 - All scripts for Commercial Usage [AP]
+  
+      © Copyright 2015 Drake Skyline. All Rights Reserved.
+      
+=end
+#==============================================================================
+($dsx15 ||= {})[:dsx15_extended_window_colors] = true
+
+# Setup your PAL_SIZE. You may use 32, 128, or 512.
+PAL_SIZE = 32
+  
+#==============================================================================
+# ** Window_Base
+#------------------------------------------------------------------------------
+#  This is a super class of all windows within the game.
+#==============================================================================
+
+class Window_Base < Window
+  #--------------------------------------------------------------------------
+  # * Get Text Color
+  #     n : Text color number (0..31)
+  #--------------------------------------------------------------------------
+  def text_color(n)
+    case PAL_SIZE
+    when 32  ; v1 = v2 = 8
+    when 128 ; v1, v2, = 16, 4
+    when 512 ; v1, v2, = 32, 2
+    else
+      msgbox("ERROR! You're using a Palette size of #{PAL_SIZE}.
+      You need to use a 32, 128, or 512 Palette. 
+      #{$data_system.game_title} will now exit.")
+      exit
+    end
+    windowskin.get_pixel(64 + (n % v1) * v2, 96 + (n / v1) * v2)
+  end
+end
