@@ -32,7 +32,7 @@
       
 =end
 #==============================================================================
-($dsx15 ||= {})[:dsx15_extended_window_colors] = true
+($dsx15 ||= {})[:dsx15_extended_window_color_palette] = true
 
 # Setup your PAL_SIZE. You may use 32, 128, or 512.
 PAL_SIZE = 32
