@@ -14,13 +14,13 @@
       This script will not work outside of RPG Maker VX Ace.
     
     How to Use :
-      I've provided the default windowskin with my new color palette method.
-      The grid is now 4x4 for a total of 128 possible colors as opposed 
-      to RM's default 8x8 for a total of 32 possible colors. You can still 
-      call these new colors like you would any other color. \c[x]
-      If you really want a lot more colors I've also included the option
-      of allowing you to use 2x2 colors for a total of 512 possible colors.
-      (Not that you'd even use the 128 colors, but who knows?!)
+      Change the PAL_SIZE to what you'd like your color Palette to be.
+      You can only use 32, 128, or 512. All other values with throw
+      an error. When setting up your windowskin use the following
+      formula to create the perfect palette with no issues:
+      32  = 8x8 sqaures [8 across, 4 down]
+      128 = 4x4 squares [16 across, 8 down]
+      512 = 2x2 squares [32 across, 16 down]
       
     License Fees : 
       key : [AP] = Any Project : [SP] = Single Project
